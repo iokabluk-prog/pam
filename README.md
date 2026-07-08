@@ -189,4 +189,96 @@ if [ $(date +%a) = "Sat" ] || [ $(date +%a) = "Sun" ]; then
     exit 0
 fi
 # Добавляем права на исполнение root@pam:~# chmod +x /usr/local/bin/login.sh
+root@pam:~# chmod +x /usr/local/bin/login.sh
+# Укажем в файле /etc/pam.d/sshd модуль pam_exec и наш скрипт
 
+# PAM configuration for the Secure Shell service
+
+# Standard Un*x authentication.
+@include common-auth
+
+# === ВЫПОЛНЕНИЕ СКРИПТА ПРИ АУТЕНТИФИКАЦИИ ===
+auth       required     pam_exec.so debug /usr/local/bin/login.sh
+
+# Disallow non-root logins when /etc/nologin exists.
+account    required     pam_nologin.so
+
+# Uncomment and edit /etc/security/access.conf if you need to set comp>
+# access limits that are hard to express in sshd_config.
+# account  required     pam_access.so
+
+# Standard Un*x authorization.
+@include common-account
+
+# SELinux needs to be the first session rule.  This ensures that any
+# lingering context has been cleared.  Without this it is possible tha>
+# module could execute code in the wrong domain.
+session [success=ok ignore=ignore module_unknown=ignore default=bad]  >
+
+# Set the loginuid process attribute.
+
+
+# Устанавливаем время 
+root@pam:~# sudo date 071112302026.00
+Sat Jul 11 12:30:00 UTC 2026
+# Проверим подключение по SSh для пользователей otus и otusadm
+PS C:\WINDOWS\System32> ssh otus@192.168.56.11
+otus@192.168.56.11's password:
+Permission denied, please try again.
+otus@192.168.56.11's password:
+PS C:\WINDOWS\System32> ssh otusadm@192.168.56.11
+otusadm@192.168.56.11's password:
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-181-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Jul  8 08:30:45 UTC 2026
+
+  System load:             0.01
+  Usage of /:              4.2% of 38.70GB
+  Memory usage:            22%
+  Swap usage:              0%
+  Processes:               111
+  Users logged in:         1
+  IPv4 address for enp0s3: 10.0.2.15
+  IPv6 address for enp0s3: fd00::24:d8ff:fe7c:d655
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+New release '24.04.4 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+Last login: Wed Jul  8 08:12:12 2026 from 192.168.56.1
+Could not chdir to home directory /home/otusadm: No such file or directory
+$ whoami
+otusadm
+$
+# При логине пользователя otus появляется ошибка. Пользователь otusadm подключается без проблем
