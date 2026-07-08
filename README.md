@@ -171,3 +171,22 @@ Connection to 192.168.56.11 closed.
 root@pam:~# cat /etc/group | grep admin
 admin:x:117:otusadm,root,vagrant
 # Используем модуль pam_exec
+# Создадим файл-скрипт /usr/local/bin/login.sh
+root@pam:~# nano /usr/local/bin/login.sh
+#!/bin/bash
+#Первое условие: если день недели суббота или воскресенье
+if [ $(date +%a) = "Sat" ] || [ $(date +%a) = "Sun" ]; then
+ #Второе условие: входит ли пользователь в группу admin
+ if getent group admin | grep -qw "$PAM_USER"; then
+        #Если пользователь входит в группу admin, то он может подключиться
+        exit 0
+      else
+        #Иначе ошибка (не сможет подключиться)
+        exit 1
+    fi
+  #Если день не выходной, то подключиться может любой пользователь
+  else
+    exit 0
+fi
+# Добавляем права на исполнение root@pam:~# chmod +x /usr/local/bin/login.sh
+
