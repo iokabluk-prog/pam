@@ -167,4 +167,7 @@ otusadm
 $ exit
 Connection to 192.168.56.11 closed.
 # Настроим правило, по которому все пользователи кроме тех, что указаны в группе admin не смогут подключаться в выходные дни
-
+# Проверим, что пользователи root, vagrant и otusadm есть в группе admin
+root@pam:~# cat /etc/group | grep admin
+admin:x:117:otusadm,root,vagrant
+# Используем модуль pam_exec
