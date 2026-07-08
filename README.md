@@ -30,3 +30,24 @@ Vagrant.configure("2") do |config|
     end
   end
 end
+# Создаем ВМ командой vagrant up
+# Подключаемся к ВМ и переходим в в root-пользователя
+vagrant@pam:~$ sudo -i
+root@pam:~#
+# Создаём пользователя otusadm и otus
+root@pam:~# sudo useradd otusadm && sudo useradd otus
+# Создаём пользователям пароли
+root@pam:~# sudo passwd otusadm
+New password:
+Retype new password:
+passwd: password updated successfully
+root@pam:~# sudo passwd otus
+New password:
+Retype new password:
+passwd: password updated successfully
+# Создаём группу admin
+root@pam:~# sudo groupadd -f admin
+
+
+
+
